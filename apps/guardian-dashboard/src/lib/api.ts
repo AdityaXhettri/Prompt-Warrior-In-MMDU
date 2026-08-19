@@ -65,11 +65,13 @@ export function subscribeStream(userId: string, onMessage: (data: any) => void):
   let es: EventSource | null = null;
   try {
     es = new EventSource(url);
-    es.onmessage = (e) => {
+    const handler = (e: MessageEvent) => {
       try {
         onMessage(JSON.parse(e.data));
       } catch {}
     };
+    es.addEventListener("message", handler);
+    es.addEventListener("snapshot", handler);
   } catch {}
   return () => es?.close();
 }

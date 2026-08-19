@@ -28,7 +28,7 @@ Underneath, a single **FastAPI backend** owns the deterministic safety engine, t
 ┌────────────────────┐    ┌────────────────────────┐    ┌──────────────────────┐
 │   User App (Vite/  │    │  Guardian Dashboard    │    │  SafetyNet CLI       │
 │   React + TS +     │    │  (Vite/React + TS +    │    │  (Python + Rich)     │
-│   Tailwind + Map)  │    │  Tailwind + Map)       │    │                      │
+│   CSS + Leaflet)   │    │  CSS + Leaflet)        │    │                      │
 └────────┬───────────┘    └────────────┬───────────┘    └──────────┬───────────┘
          │ HTTP + SSE                   │                           │
          └─────────────────────────────┼───────────────────────────┘
@@ -86,6 +86,12 @@ Shared types live in [`packages/shared-types`](packages/shared-types) so every c
 
 ## Quick start
 
+### 0. Install workspace dependencies (Bun)
+
+```bash
+bun install
+```
+
 ### 1. Backend
 
 ```bash
@@ -94,6 +100,11 @@ python -m venv .venv && source .venv/bin/activate   # or .venv\Scripts\activate 
 pip install -r requirements.txt
 cp .env.example .env                                # optional, leave blank for offline mode
 uvicorn app.main:app --reload --port 8000
+```
+
+Or from root:
+```bash
+bun run dev:backend
 ```
 
 The backend starts at `http://localhost:8000`, with full API docs at `http://localhost:8000/docs`.
@@ -107,9 +118,8 @@ curl http://localhost:8000/status
 ### 2. User App
 
 ```bash
-cd apps/user-app
-npm install
-npm run dev
+bun run dev:user
+# or: cd apps/user-app && bun run dev
 ```
 
 Open `http://localhost:5173`.
@@ -117,9 +127,8 @@ Open `http://localhost:5173`.
 ### 3. Guardian Dashboard
 
 ```bash
-cd apps/guardian-dashboard
-npm install
-npm run dev
+bun run dev:guardian
+# or: cd apps/guardian-dashboard && bun run dev
 ```
 
 Open `http://localhost:5174`.

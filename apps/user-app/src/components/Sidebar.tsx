@@ -16,7 +16,9 @@ import {
   Siren,
 } from "lucide-react";
 
-const navItems = [
+import type { Page } from "../App";
+
+const navItems: { id: Page; label: string; icon: any }[] = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "zones", label: "Safety Zones", icon: MapPin },
   { id: "journey", label: "Safe Journey", icon: Compass },
@@ -37,7 +39,7 @@ export default function Sidebar({
   onSOSClick,
 }: {
   currentPage: string;
-  onNavigate: (p: string) => void;
+  onNavigate: (p: Page) => void;
   collapsed: boolean;
   onToggleCollapse: () => void;
   onSOSClick: () => void;

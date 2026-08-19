@@ -43,18 +43,22 @@ export function clearBuffer() {
 
 export async function drainBuffer(baseUrl: string, userId: string) {
   const buf = loadBuffer();
-  for (const ev of buf) {
+  let index = 0;
+  for (; index < buf.length; index++) {
+    const ev = buf[index];
     try {
-      // Use the simulator move endpoint to replay queued offline events.
       if (ev.location) {
-        await fetch(`${baseUrl}/simulate/move`, {
+        const r = await fetch(`${baseUrl}/simulate/move`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ user_id: userId, to: ev.location, source: "real" }),
         });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
       }
     } catch {
-      // network flaked mid-drain; keep the rest
+      // network flaked mid-drain; keep the remaining items
+      const remaining = buf.slice(index);
+      localStorage.setItem(KEY, JSON.stringify(remaining));
       return;
     }
   }

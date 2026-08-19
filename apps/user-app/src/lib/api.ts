@@ -48,11 +48,14 @@ class ApiClient {
   listContacts(id: string) {
     return this.req<TrustedContact[]>(`/users/${id}/contacts`);
   }
+  addContact(payload: { user_id: string; name: string; phone: string; relation?: string; is_primary?: boolean }) {
+    return this.req<TrustedContact>(`/contacts`, { method: "POST", body: JSON.stringify(payload) });
+  }
+  deleteContact(cid: string) {
+    return this.req<{ ok: boolean }>(`/contacts/${cid}`, { method: "DELETE" });
+  }
 
   // zones
-  zones(uid: string) {
-    return this.req<SafetyZone[]>(`/users/${uid}/zones`);
-  }
   listZones(uid: string) {
     return this.req<SafetyZone[]>(`/users/${uid}/zones`);
   }
@@ -200,18 +203,15 @@ export function subscribeStream(userId: string, onMessage: (data: any) => void):
   let es: EventSource | null = null;
   try {
     es = new EventSource(url);
-    es.onmessage = (e) => {
+    const handler = (e: MessageEvent) => {
       try {
         onMessage(JSON.parse(e.data));
       } catch {
         // ignore
       }
     };
-    es.addEventListener("message", (e: any) => {
-      try {
-        onMessage(JSON.parse(e.data));
-      } catch {}
-    });
+    es.addEventListener("message", handler);
+    es.addEventListener("snapshot", handler);
   } catch (err) {
     console.warn("SSE failed", err);
   }

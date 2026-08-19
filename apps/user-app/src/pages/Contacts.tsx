@@ -23,34 +23,27 @@ export default function Contacts({ userId }: Props) {
   const addContact = async () => {
     if (!name || !phone) return;
     try {
-      const r = await fetch(`${(import.meta.env.VITE_API_URL as string) || "http://localhost:8000"}/contacts`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: "",
-          user_id: userId,
-          name,
-          phone,
-          relation,
-          is_primary: contacts.length === 0,
-        }),
+      await api.addContact({
+        user_id: userId,
+        name,
+        phone,
+        relation,
+        is_primary: contacts.length === 0,
       });
-      if (!r.ok) throw new Error("Failed to add contact");
       setName("");
       setPhone("");
-      // also persist locally for the SOS modal
-      const next = [
-        ...contacts,
-        { id: crypto.randomUUID(), user_id: userId, name, phone, relation, is_primary: contacts.length === 0 },
-      ];
-      localStorage.setItem("safetynet:contacts", JSON.stringify(next));
       reload();
     } catch (err: any) {
       setError(err?.message || "Failed to add contact");
     }
   };
 
-  const removeContact = (id: string) => {
+  const removeContact = async (id: string) => {
+    try {
+      await api.deleteContact(id);
+    } catch {
+      // backend may not have it — still remove locally
+    }
     const next = contacts.filter((c) => c.id !== id);
     setContacts(next);
     localStorage.setItem("safetynet:contacts", JSON.stringify(next));

@@ -50,7 +50,7 @@ export default function Dashboard({ userId, state }: DashboardProps) {
         api.events(userId, 30),
         api.risks(userId, 5),
         api.alerts(userId),
-        api.zones(userId),
+        api.listZones(userId),
         api.hotspots(),
       ]);
       setEvents(e);
