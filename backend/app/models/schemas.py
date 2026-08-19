@@ -1,0 +1,21 @@
+"""Re-export of DTOs so internal imports can use `from ..models.schemas import ...`."""
+from . import (  # noqa: F401
+    Alert,
+    CommunityReport,
+    Hotspot,
+    Journey,
+    LatLng,
+    RiskAssessment,
+    RouteRequest,
+    RouteResponse,
+    SafetyEvent,
+    SafetyState,
+    SafetyZone,
+    SimulateMoveRequest,
+    SimulateMoveResponse,
+    FamiliarSuggestion,
+    StartJourneyRequest,
+    StatusResponse,
+    TrustedContact,
+    UserProfile,
+)

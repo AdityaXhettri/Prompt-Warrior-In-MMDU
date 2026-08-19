@@ -1,0 +1,21 @@
+{
+  "name": "safetynet",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SafetyNet - AI-powered personal and community safety platform (PromptWars x GDGoC MM(DU) hackathon)",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:backend": "cd backend && uvicorn app.main:app --reload --port 8000",
+    "dev:user": "cd apps/user-app && bun run dev",
+    "dev:guardian": "cd apps/guardian-dashboard && bun run dev",
+    "build:user": "cd apps/user-app && bun run build",
+    "build:guardian": "cd apps/guardian-dashboard && bun run build",
+    "cli": "cd cli && python -m safetynet_cli"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
