@@ -53,3 +53,6 @@ ENV/
 
 # OS
 .DS_Store
+
+# Reference project (ClimateGuard) — kept locally for inspiration, not shipped
+ClimateGuard/

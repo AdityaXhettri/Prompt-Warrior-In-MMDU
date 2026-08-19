@@ -4,6 +4,8 @@
 
 Built for **PromptWars × GDGoC MM(DU)** hackathon.
 
+> **Design note.** The UI/UX is built on the visual language of [ClimateGuard](https://github.com/) — the same dark sidebar, the same green accent, the same map-first panel system, the same SOS modal flow — but every feature, type, route, and event in SafetyNet is implemented from scratch with no project-specific code carried over. The shared visual language is the only inheritance.
+
 ---
 
 ## What is SafetyNet?

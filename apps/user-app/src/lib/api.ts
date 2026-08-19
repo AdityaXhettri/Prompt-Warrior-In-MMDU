@@ -50,6 +50,9 @@ class ApiClient {
   }
 
   // zones
+  zones(uid: string) {
+    return this.req<SafetyZone[]>(`/users/${uid}/zones`);
+  }
   listZones(uid: string) {
     return this.req<SafetyZone[]>(`/users/${uid}/zones`);
   }
@@ -170,6 +173,11 @@ class ApiClient {
       method: "POST",
       body: JSON.stringify({ origin, destination, avoid_hotspots: avoidHotspots }),
     });
+  }
+
+  // ai analysis
+  analyze(uid: string) {
+    return this.req<RiskAssessment>(`/ai/analyze/${uid}`, { method: "POST" });
   }
 
   // community
