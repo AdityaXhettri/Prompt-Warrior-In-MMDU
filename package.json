@@ -8,12 +8,16 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:backend": "cd backend && uvicorn app.main:app --reload --port 8000",
-    "dev:user": "cd apps/user-app && bun run dev",
-    "dev:guardian": "cd apps/guardian-dashboard && bun run dev",
-    "build:user": "cd apps/user-app && bun run build",
-    "build:guardian": "cd apps/guardian-dashboard && bun run build",
-    "cli": "cd cli && python -m safetynet_cli"
+    "dev": "bun --filter \"*\" dev",
+    "dev:all": "bun --filter \"*\" dev",
+    "dev:backend": "cd backend && uv run uvicorn app.main:app --reload --port 8000",
+    "dev:user": "bun --filter @safetynet/user-app dev",
+    "dev:guardian": "bun --filter @safetynet/guardian-dashboard dev",
+    "build": "bun --filter @safetynet/user-app build && bun --filter @safetynet/guardian-dashboard build",
+    "build:user": "bun --filter @safetynet/user-app build",
+    "build:guardian": "bun --filter @safetynet/guardian-dashboard build",
+    "test:backend": "cd backend && uv run pytest",
+    "cli": "cd cli && uv run python -m safetynet_cli"
   },
   "engines": {
     "node": ">=18"

@@ -37,6 +37,7 @@ interface Props {
   hotspots?: { center: LatLng; risk_weight: number }[];
   className?: string;
   zoom?: number;
+  mapRef?: React.MutableRefObject<L.Map | null>;
 }
 
 export default function MapView({
@@ -49,8 +50,9 @@ export default function MapView({
   hotspots,
   className,
   zoom = 13,
+  mapRef,
 }: Props) {
-  const ref = useRef<L.Map | null>(null);
+  const internalRef = useRef<L.Map | null>(null);
   return (
     <div className={`map ${className || ""}`} style={{ height: "100%" }}>
       <MapContainer
@@ -58,7 +60,10 @@ export default function MapView({
         zoom={zoom}
         style={{ height: "100%", width: "100%" }}
         ref={(m) => {
-          if (m) ref.current = m;
+          if (m) {
+            internalRef.current = m;
+            if (mapRef) mapRef.current = m;
+          }
         }}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap" />

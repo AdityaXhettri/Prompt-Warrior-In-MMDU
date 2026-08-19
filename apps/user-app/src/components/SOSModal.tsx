@@ -11,7 +11,7 @@ const DISASTER_TYPES = [
   { id: "other", label: "Other", icon: "��" },
 ] as const;
 
-export default function SOSModal({ isOpen, onClose, onNavigateToContacts }: { isOpen: boolean; onClose: () => void; onNavigateToContacts?: () => void }) {
+export default function SOSModal({ isOpen, onClose, onNavigateToContacts, userId = "demo-user" }: { isOpen: boolean; onClose: () => void; onNavigateToContacts?: () => void; userId?: string }) {
   const [step, setStep] = useState<"select" | "sending" | "result">("select");
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -74,7 +74,7 @@ export default function SOSModal({ isOpen, onClose, onNavigateToContacts }: { is
 
     try {
       // 1. Trigger SOS so the backend dispatches the alert.
-      const res = await api.sos("demo-user");
+      const res = await api.sos(userId);
       const loc = location || { lat: 28.6139, lng: 77.2090 };
       setResult({
         summary: `Emergency dispatched. Guardians notified.`,

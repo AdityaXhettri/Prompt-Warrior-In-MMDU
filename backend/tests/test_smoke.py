@@ -55,6 +55,35 @@ def test_zone_create_and_list():
     assert any(z["label"] == "Test" for z in zones)
 
 
+def test_contact_create_list_and_delete():
+    _new_store()
+    r = client.post(
+        "/contacts",
+        json={
+            "user_id": "demo-user",
+            "name": "Aarav Sharma",
+            "phone": "+919876543210",
+            "relation": "Friend",
+            "is_primary": True,
+        },
+    )
+    assert r.status_code == 200
+    cid = r.json()["id"]
+    assert cid
+
+    r_list = client.get("/users/demo-user/contacts")
+    assert r_list.status_code == 200
+    contacts = r_list.json()
+    assert any(c["id"] == cid and c["name"] == "Aarav Sharma" for c in contacts)
+
+    r_del = client.delete(f"/contacts/{cid}")
+    assert r_del.status_code == 200
+    assert r_del.json()["ok"] is True
+
+    r_list2 = client.get("/users/demo-user/contacts")
+    assert not any(c["id"] == cid for c in r_list2.json())
+
+
 def test_journey_full_flow():
     _new_store()
     now = datetime.now(tz=timezone.utc)

@@ -144,6 +144,7 @@ export default function App() {
           zones={zones}
           expectedRoute={activeJourney?.expected_route}
           actualRoute={actualRoute}
+          mapRef={mapRef}
         />
       </div>
 

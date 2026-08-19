@@ -22,6 +22,9 @@ router = APIRouter()
 # ---------- users ----------
 @router.post("/users", response_model=UserProfile)
 def create_user(payload: UserProfile, store: Store = Depends(get_store)) -> UserProfile:
+    if not payload.id:
+        from uuid import uuid4
+        payload.id = str(uuid4())
     store.users[payload.id] = payload
     return payload
 
@@ -42,6 +45,9 @@ def get_user(user_id: str, store: Store = Depends(get_store)) -> UserProfile:
 # ---------- contacts ----------
 @router.post("/contacts", response_model=TrustedContact)
 def add_contact(payload: TrustedContact, store: Store = Depends(get_store)) -> TrustedContact:
+    if not payload.id:
+        from uuid import uuid4
+        payload.id = str(uuid4())
     store.contacts[payload.id] = payload
     return payload
 
@@ -51,9 +57,20 @@ def list_contacts(user_id: str, store: Store = Depends(get_store)) -> List[Trust
     return [c for c in store.contacts.values() if c.user_id == user_id]
 
 
+@router.delete("/contacts/{contact_id}")
+def delete_contact(contact_id: str, store: Store = Depends(get_store)) -> dict:
+    if contact_id not in store.contacts:
+        raise HTTPException(404, "contact not found")
+    del store.contacts[contact_id]
+    return {"ok": True}
+
+
 # ---------- zones ----------
 @router.post("/zones", response_model=SafetyZone)
 def create_zone(payload: SafetyZone, store: Store = Depends(get_store)) -> SafetyZone:
+    if not payload.id:
+        from uuid import uuid4
+        payload.id = str(uuid4())
     store.zones[payload.id] = payload
     return payload
 

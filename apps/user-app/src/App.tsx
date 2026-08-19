@@ -16,6 +16,7 @@ import Contacts from "./pages/Contacts";
 import About from "./pages/About";
 
 import { api, subscribeStream } from "./lib/api";
+import { useHandsFreeSOS } from "./lib/handsFreeSOS";
 
 export type Page =
   | "dashboard"
@@ -45,6 +46,25 @@ export default function App() {
     useState<SafetyState | null>(null);
 
   const userId = DEMO_USER_ID;
+
+  // Read handsfree toggle from localStorage (default: true)
+  const [handsfreeEnabled] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem("safetynet:toggles");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.handsfree ?? true;
+      }
+    } catch {
+      // fallback
+    }
+    return true;
+  });
+
+  useHandsFreeSOS(userId, handsfreeEnabled, (method) => {
+    console.info(`[Hands-free SOS] Triggered via ${method}`);
+    setSOSModalOpen(true);
+  });
 
   useEffect(() => {
     let mounted = true;
@@ -190,6 +210,7 @@ export default function App() {
 
       <SOSModal
         isOpen={sosModalOpen}
+        userId={userId}
         onClose={() =>
           setSOSModalOpen(false)
         }
