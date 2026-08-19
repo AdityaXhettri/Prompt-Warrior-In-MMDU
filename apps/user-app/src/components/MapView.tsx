@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Marker, Popup, Circle, Polyline, useMap, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Circle, Polyline, Rectangle, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import type { LatLng, SafetyZone } from "@safetynet/shared-types";
+import { RISK_ZONES, colorForRisk, type RiskZone } from "../lib/riskCities";
 
 const userIcon = new L.DivIcon({
   className: "sn-marker",
@@ -48,9 +49,12 @@ interface Props {
   actualRoute?: LatLng[];
   hotspots?: { center: LatLng; risk_weight: number }[];
   onMapClick?: (latlng: LatLng) => void;
+  onRiskZoneClick?: (zone: RiskZone) => void;
   className?: string;
   zoom?: number;
   showZones?: boolean;
+  showRiskZones?: boolean;
+  interactive?: boolean;
 }
 
 export default function MapView({
@@ -62,9 +66,12 @@ export default function MapView({
   actualRoute,
   hotspots,
   onMapClick,
+  onRiskZoneClick,
   className,
   zoom = 13,
   showZones = true,
+  showRiskZones = false,
+  interactive = true,
 }: Props) {
   const ref = useRef<L.Map | null>(null);
   return (
@@ -76,6 +83,10 @@ export default function MapView({
         ref={(m) => {
           if (m) ref.current = m;
         }}
+        scrollWheelZoom={interactive}
+        dragging={interactive}
+        doubleClickZoom={interactive}
+        zoomControl={interactive}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -83,6 +94,34 @@ export default function MapView({
         />
         <Recenter center={center} zoom={zoom} />
         {onMapClick && <ClickHandler onClick={onMapClick} />}
+
+        {showRiskZones &&
+          RISK_ZONES.map((z) => (
+            <Rectangle
+              key={z.id}
+              bounds={[
+                [z.ll.lat, z.ll.lng],
+                [z.ur.lat, z.ur.lng],
+              ]}
+              pathOptions={{
+                color: colorForRisk(z.riskScore),
+                fillColor: colorForRisk(z.riskScore),
+                fillOpacity: 0.25,
+                weight: 1.5,
+              }}
+              eventHandlers={{
+                click: () => onRiskZoneClick?.(z),
+              }}
+            >
+              <Popup>
+                <strong>{z.name}</strong>
+                <br />
+                {z.district}, {z.state}
+                <br />
+                Risk score: {z.riskScore}
+              </Popup>
+            </Rectangle>
+          ))}
 
         {showZones &&
           zones?.map((z) => (

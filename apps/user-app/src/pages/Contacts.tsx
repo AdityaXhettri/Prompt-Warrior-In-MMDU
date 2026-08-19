@@ -90,30 +90,33 @@ export default function Contacts({ userId }: Props) {
             Add a contact
           </h3>
           <div className="form-group">
-            <label>Name</label>
+            <label style={{ color: "var(--color-text-primary)" }}>Name</label>
             <input
               className="input"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Aarav"
+              style={{ color: "var(--color-text-primary)" }}
             />
           </div>
           <div className="form-group">
-            <label>Phone (with country code)</label>
+            <label style={{ color: "var(--color-text-primary)" }}>Phone (with country code)</label>
             <input
               className="input"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+91 9876543210"
+              style={{ color: "var(--color-text-primary)", fontFamily: "var(--font-mono)" }}
             />
           </div>
           <div className="form-group">
-            <label>Relation</label>
+            <label style={{ color: "var(--color-text-primary)" }}>Relation</label>
             <input
               className="input"
               value={relation}
               onChange={(e) => setRelation(e.target.value)}
               placeholder="Friend"
+              style={{ color: "var(--color-text-primary)" }}
             />
           </div>
           <button className="btn btn-primary" style={{ width: "100%" }} onClick={addContact}>
@@ -141,22 +144,40 @@ export default function Contacts({ userId }: Props) {
             ) : (
               <div className="grid grid-2">
                 {contacts.map((c) => (
-                  <div className="card tight" key={c.id}>
+                  <div
+                    className="card tight"
+                    key={c.id}
+                    style={{
+                      background: c.is_primary ? "rgba(34, 197, 94, 0.1)" : "var(--color-bg-card)",
+                      borderColor: c.is_primary ? "var(--color-accent-green)" : "var(--color-border)",
+                    }}
+                  >
                     <div className="row between">
                       <div className="row">
-                        <Phone size={14} />
-                        <strong>{c.name}</strong>
+                        <Phone size={14} color="var(--color-accent-green)" />
+                        <strong style={{ color: "var(--color-text-primary)" }}>{c.name}</strong>
                       </div>
-                      <button className="btn-icon" onClick={() => removeContact(c.id)}>
-                        <Trash size={12} />
-                      </button>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                        {c.is_primary && (
+                          <span className="risk-badge low">primary</span>
+                        )}
+                        <button className="btn-icon" onClick={() => removeContact(c.id)}>
+                          <Trash size={12} />
+                        </button>
+                      </div>
                     </div>
-                    <div className="muted" style={{ fontSize: "0.75rem", marginTop: 4 }}>
+                    <div
+                      style={{
+                        fontSize: "0.78rem",
+                        marginTop: 6,
+                        color: "var(--color-text-primary)",
+                        fontFamily: "var(--font-mono)",
+                      }}
+                    >
                       {c.phone}
                     </div>
-                    <div className="muted" style={{ fontSize: "0.75rem" }}>
+                    <div className="muted" style={{ fontSize: "0.75rem", marginTop: 2 }}>
                       {c.relation}
-                      {c.is_primary && " · primary"}
                     </div>
                   </div>
                 ))}
